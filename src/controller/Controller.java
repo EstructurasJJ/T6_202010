@@ -1,28 +1,27 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
+import model.logic.Comparendo;
 import model.logic.Modelo;
 import view.View;
 
 public class Controller {
 
-	/* Instancia del Modelo*/
 	private Modelo modelo;
-	
-	/* Instancia de la Vista*/
 	private View view;
-	
-	/**
-	 * Crear la vista y el modelo del proyecto
-	 * @param capacidad tamaNo inicial del arreglo
-	 */
+	public final static String RUTAGEOJASON = "./data/Comparendos_DEI_2018_Bogotá_D.C.geojson";
+	public final static String JUEGUEMOS = "./data/Comparendos_DEI_2018_Bogotá_D.C_small.geojson";
+	public final static String COTEJO = "./data/Comparendos_DEI_2018_Bogotá_D.C_50000_.geojson";
+
 	public Controller ()
 	{
 		view = new View();
 		modelo = new Modelo();
 	}
-		
+
 	public void run() 
 	{
 		Scanner lector = new Scanner(System.in);
@@ -30,74 +29,87 @@ public class Controller {
 		String dato = "";
 		String respuesta = "";
 
-		while( !fin ){
+		Comparendo[] arreglo = null;
+
+		while( !fin )
+		{
 			view.printMenu();
 
 			int option = lector.nextInt();
-			switch(option){
-				case 1:
-					view.printMessage("--------- \nCrear Arreglo \nDar capacidad inicial del arreglo: ");
-				    int capacidad = lector.nextInt();
-				    modelo = new Modelo(capacidad); 
-				    view.printMessage("Arreglo Dinamico creado");
-				    view.printMessage("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;
 
-				case 2:
-					view.printMessage("--------- \nDar cadena (simple) a ingresar: ");
-					dato = lector.next();
-					modelo.agregar(dato);
-					view.printMessage("Dato agregado");
-					view.printMessage("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;
+			switch(option)
+			{
+			case 1:
 
-				case 3:
-					view.printMessage("--------- \nDar cadena (simple) a buscar: ");
-					dato = lector.next();
-					respuesta = modelo.buscar(dato);
-					if ( respuesta != null)
-					{
-						view.printMessage("Dato encontrado: "+ respuesta);
-					}
-					else
-					{
-						view.printMessage("Dato NO encontrado");
-					}
-					view.printMessage("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;
+				//Cargar el archivo
 
-				case 4:
-					view.printMessage("--------- \nDar cadena (simple) a eliminar: ");
-					dato = lector.next();
-					respuesta = modelo.eliminar(dato);
-					if ( respuesta != null)
-					{
-						view.printMessage("Dato eliminado "+ respuesta);
-					}
-					else
-					{
-						view.printMessage("Dato NO eliminado");							
-					}
-					view.printMessage("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;
+				modelo.leerGeoJson(RUTAGEOJASON);
 
-				case 5: 
-					view.printMessage("--------- \nContenido del Arreglo: ");
-					view.printModelo(modelo);
-					view.printMessage("Numero actual de elementos " + modelo.darTamano() + "\n---------");						
-					break;	
+				view.printMessage("Archivo GeoJSon Cargado");
+				view.printMessage("Numero actual de comparendos  " + modelo.darArbolito().size() + "\n----------");
+				
+				System.out.println("El mínimo es: " + modelo.darArbolito().min());
+				System.out.println("El máximo es: " + modelo.darArbolito().max() + "\n----------");
+
+				break;
+
+			case 2:
+				
+				System.out.println("Ingrese el ID del comparendo que desea buscar:");
+				int id = Integer.parseInt(lector.next());
+				
+				Comparendo compi = modelo.consultarComparendoPorID(id);
+				
+				if (compi != null)
+				{
+					System.out.println("El id es: " + compi.darObjectid());
+					System.out.println("La fecha es: " + compi.darFecha_Hora().toString());
+					System.out.println("El tipo de servicio es: " + compi.darTipo_Servicio());
+					System.out.println("La clase del vehiculo es: " + compi.darClase_Vehi());
+					System.out.println("La infracción es: " + compi.darInfraccion() + "\n----------");
+				}
+
+				break;
+
+			case 3:
+				
+				System.out.println("Ingrese el ID mínimo del rango de comparendos que desea buscar:");
+				int lo = Integer.parseInt(lector.next());
+				
+				System.out.println("Ingrese el ID máximo del rango de comparendos que desea buscar:");
+				int hi = Integer.parseInt(lector.next());
+				
+				Iterator<Comparendo> lista = modelo.consultarComparendosEnRango(lo, hi);
+				
+				while(lista.hasNext())
+				{
+					Comparendo compi1 = lista.next();
 					
-				case 6: 
-					view.printMessage("--------- \n Hasta pronto !! \n---------"); 
-					lector.close();
-					fin = true;
-					break;	
+					System.out.println("El id es: " + compi1.darObjectid());
+					System.out.println("La fecha es: " + compi1.darFecha_Hora().toString());
+					System.out.println("El tipo de servicio es: " + compi1.darTipo_Servicio());
+					System.out.println("La clase del vehiculo es: " + compi1.darClase_Vehi());
+					System.out.println("La infracción es: " + compi1.darInfraccion() + "\n----------");
+				}
 
-				default: 
-					view.printMessage("--------- \n Opcion Invalida !! \n---------");
-					break;
+				break;
+
+			case 4:
+
+				view.printMessage("--------- \n Hasta pronto !! \n---------"); 
+				lector.close();
+				fin = true;
+
+				break;	
+
+			default: 
+
+				view.printMessage("--------- \n Opción Invalida !! \n---------");
+
+				break;
+
 			}
 		}
-		
+
 	}	
 }
