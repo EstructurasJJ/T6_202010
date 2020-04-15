@@ -43,14 +43,17 @@ public class Controller {
 
 				//Cargar el archivo
 
-				modelo.leerGeoJson(RUTAGEOJASON);
+				modelo.leerGeoJson(COTEJO);
 
 				view.printMessage("Archivo GeoJSon Cargado");
 				view.printMessage("Numero actual de comparendos  " + modelo.darArbolito().size() + "\n----------");
 				
 				System.out.println("El mínimo es: " + modelo.darArbolito().min());
 				System.out.println("El máximo es: " + modelo.darArbolito().max() + "\n----------");
-
+				System.out.println("La altura del árbol es: "+modelo.darArbolito().height());
+				System.out.println("Las hojas del árbol son: "+modelo.darArbolito().contarHojas());
+				System.out.println("Acumulado de altura de hojas del árbol: "+modelo.darArbolito().acumuladoAlturaHojas());
+				System.out.println("Promedio de alturas: " +(modelo.darArbolito().acumuladoAlturaHojas()/modelo.darArbolito().contarHojas()));
 				break;
 
 			case 2:

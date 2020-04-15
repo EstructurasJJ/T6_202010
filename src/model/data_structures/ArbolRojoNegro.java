@@ -277,8 +277,37 @@ public class ArbolRojoNegro <Key extends Comparable<Key>, Value extends Comparab
 		
 		return NegroOjo(h.left, negro) && NegroOjo(h.right, negro);
 	}
+	
+	public int contarHojas()
+	{
+		return contarHojas(root);
+	}
 
+	private int contarHojas(Node x)
+	{
+		if (x.right == null && x.left==null) return 1;
+		if (x.right==null) return contarHojas(x.left);
+		if (x.left==null) return contarHojas(x.right);
+		
+		return contarHojas(x.left)+contarHojas(x.right);
+		
+	}
+	
+	public int acumuladoAlturaHojas()
+	{
+		return acumuladoAlturaHojas(root);
+	}
 
+	private int acumuladoAlturaHojas(Node x)
+	{
+		if (x.right==null && x.left==null) return height(x);
+		if (x.right==null) return height (x.left);
+		if (x.left==null) return height (x.right);
+		
+		return height(x.right) + height(x.left);
+		
+	}
+	
    
 
 	
