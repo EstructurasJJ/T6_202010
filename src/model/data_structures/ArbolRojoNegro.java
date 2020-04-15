@@ -10,7 +10,7 @@ public class ArbolRojoNegro <Key extends Comparable<Key>, Value extends Comparab
 	{
 		Key key;
 		Value val;
-		Node left; 
+		Node left;
 		Node right;
 		int N;
 		boolean color;
